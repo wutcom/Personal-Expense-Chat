@@ -1,8 +1,18 @@
+export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { redirect } from "next/navigation";
 import { WalletCards } from "lucide-react";
+import { getAuthenticatedSession } from "@/lib/auth/session";
+import { AuthForm } from "@/components/auth/auth-form";
 export const metadata: Metadata = { title: "เข้าสู่ระบบ" };
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const session = await getAuthenticatedSession();
+  if (session.status === "authenticated") redirect("/chat");
+  const { error } = await searchParams;
   return (
     <main className="auth-page">
       <section className="auth-card">
@@ -11,16 +21,20 @@ export default function LoginPage() {
         </span>
         <p className="eyebrow">PERSONAL EXPENSE CHAT</p>
         <h1>พื้นที่การเงินของคุณ</h1>
-        <p>
-          ระบบเข้าสู่ระบบ สมัครสมาชิก และรีเซ็ตรหัสผ่านด้วย Supabase
-          จะเพิ่มในระยะที่ 2
-        </p>
-        <p className="auth-notice">
-          ขณะนี้เป็นโครงสร้างแอป ยังไม่มีการยืนยันตัวตนหรือจัดเก็บข้อมูลส่วนตัว
-        </p>
-        <Link href="/chat" className="primary-link">
-          สำรวจโครงสร้างแอป →
-        </Link>
+        <p>เข้าสู่ระบบเพื่อจัดการข้อมูลส่วนตัวของคุณ</p>
+        {error ? (
+          <p role="alert" className="form-error">
+            ลิงก์ไม่ถูกต้องหรือหมดอายุ กรุณาขอลิงก์ใหม่
+          </p>
+        ) : null}
+        {session.status === "unconfigured" ? (
+          <p role="status" className="auth-notice">
+            ยังไม่ได้ตั้งค่าการเชื่อมต่อ Supabase
+            กรุณาให้ผู้ดูแลตั้งค่าระบบก่อนใช้งาน
+          </p>
+        ) : (
+          <AuthForm />
+        )}
       </section>
     </main>
   );

@@ -23,8 +23,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <span className="status-dot" />
           เริ่มต้นทีละรายการ<p>วางแผนวันนี้ เพื่อความสบายใจในวันข้างหน้า</p>
         </div>
-        <Link className="login-link" href="/login">
-          การเข้าสู่ระบบ <ArrowUpRight aria-hidden="true" size={16} />
+        <Link className="login-link" href="/settings">
+          บัญชีของคุณ <ArrowUpRight aria-hidden="true" size={16} />
         </Link>
       </aside>
       <div className="workspace">
@@ -33,7 +33,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             Expense Chat
           </Link>
           <span className="topbar-label">จัดการเงินในแบบของคุณ</span>
-          <span className="phase-badge">ระยะที่ 1 · โครงสร้างแอป</span>
+          <span className="phase-badge">ระยะที่ 2 · บัญชีส่วนตัว</span>
         </header>
         <main id="main-content" tabIndex={-1}>
           {children}

@@ -535,3 +535,58 @@ h2 {
     padding: 26px;
   }
 }
+
+.auth-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0;
+}
+.auth-tabs button {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: white;
+  font-size: 12px;
+  cursor: pointer;
+}
+.auth-tabs button[aria-pressed="true"] {
+  background: var(--green);
+  color: white;
+}
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.auth-form label {
+  font-size: 13px;
+  margin-top: 8px;
+}
+.auth-form input {
+  min-width: 0;
+  width: 100%;
+  border: 1px solid #b5c4b9;
+  border-radius: 9px;
+  background: white;
+  padding: 12px;
+  font-size: 16px;
+}
+.auth-form button,
+.settings-card button {
+  border: 0;
+  justify-content: center;
+  cursor: pointer;
+}
+.auth-form button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.form-error {
+  color: #a12525 !important;
+  font-size: 12px;
+}
+.form-status {
+  color: var(--green);
+  font-size: 12px;
+}

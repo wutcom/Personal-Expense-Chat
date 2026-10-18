@@ -1,8 +1,10 @@
+import { requireUser } from "@/lib/auth/session";
 import type { Metadata } from "next";
 import { PageHeading } from "@/components/layout/page-heading";
 import { EmptyState } from "@/components/layout/empty-state";
 export const metadata: Metadata = { title: "แผนรายเดือน" };
-export default function BudgetsPage() {
+export default async function BudgetsPage() {
+  await requireUser();
   return (
     <div className="page">
       <PageHeading
