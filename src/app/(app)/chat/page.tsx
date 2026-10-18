@@ -1,10 +1,12 @@
+import { requireUser } from "@/lib/auth/session";
 import type { Metadata } from "next";
 import { MessageCircle, Send, Sparkles } from "lucide-react";
 import { PageHeading } from "@/components/layout/page-heading";
 
 export const metadata: Metadata = { title: "แชต" };
 
-export default function ChatPage() {
+export default async function ChatPage() {
+  await requireUser();
   return (
     <div className="page chat-page">
       <PageHeading

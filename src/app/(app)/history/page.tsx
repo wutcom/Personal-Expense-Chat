@@ -1,8 +1,10 @@
+import { requireUser } from "@/lib/auth/session";
 import type { Metadata } from "next";
 import { PageHeading } from "@/components/layout/page-heading";
 import { EmptyState } from "@/components/layout/empty-state";
 export const metadata: Metadata = { title: "ประวัติ" };
-export default function HistoryPage() {
+export default async function HistoryPage() {
+  await requireUser();
   return (
     <div className="page">
       <PageHeading
