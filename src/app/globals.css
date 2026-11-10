@@ -590,3 +590,35 @@ h2 {
   color: var(--green);
   font-size: 12px;
 }
+
+.expense-history {
+  display: grid;
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+}
+
+.expense-history li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+}
+
+.expense-history li > :first-child {
+  overflow-wrap: anywhere;
+}
+
+.expense-history li > :last-child {
+  text-align: end;
+}
+
+.expense-history small {
+  display: block;
+}
+
+.summary-card p {
+  overflow-wrap: anywhere;
+}

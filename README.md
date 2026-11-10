@@ -1,6 +1,6 @@
 # Personal Expense Chat
 
-Thai-first, mobile-first expense tracker using Next.js App Router, strict TypeScript, Tailwind CSS, and Supabase SSR Auth/PostgreSQL/RLS. Implemented through **Phase 2** of [the plan](expense_chat_codex_plan.md). Financial commands and recording are still disabled until their delivery phases.
+Thai-first, mobile-first expense tracker using Next.js App Router, strict TypeScript, Tailwind CSS, Supabase Auth, and a private Google Sheets ledger. The [Google Sheets setup guide](docs/google-sheets-setup.md) describes the current storage design; [the original plan](expense_chat_codex_plan.md) describes the earlier PostgreSQL approach.
 
 ## Local setup
 
@@ -14,7 +14,7 @@ npm run dev
 
 Open http://localhost:3000. `/` redirects to `/chat`; unauthenticated workspace requests redirect to `/login`. Without Supabase configuration, login shows a setup notice and does not collect credentials. The build and automated tests do not require a Supabase project, secrets, Docker, or paid services.
 
-To enable real accounts, follow [Supabase setup](docs/supabase-setup.md): apply the versioned migration, configure Auth URLs/email templates, and fill in the three environment values. Do not paste credentials into chat or commit `.env.local`.
+Configure login through [Supabase Auth](docs/supabase-setup.md) and the ledger through [Google Sheets setup](docs/google-sheets-setup.md). The chat, history, and dashboard do not require the Supabase SQL migration. The separate profile API still uses its existing PostgreSQL table. Do not paste credentials into chat or commit `.env.local`.
 
 ## Commands
 
@@ -41,7 +41,8 @@ To enable real accounts, follow [Supabase setup](docs/supabase-setup.md): apply 
 - Seven versioned tables from the plan, owner RLS, composite category-owner foreign keys, timestamp triggers, and automatic profile/settings initialization for new and existing Auth users.
 - `GET /api/account` reads the authenticated user's profile. `PATCH /api/account` accepts only `{ "display_name": "Name" }`; rejects a caller-supplied `user_id`, requires an `Origin` header matching the validated canonical `SITE_URL` and JSON body, and updates only the authenticated user. RLS independently protects the row.
 - Authenticated responses are dynamic and private/no-store. No service worker or private-data caching is introduced.
-- Chat writes remain disabled; financial totals use explicit empty states rather than mock balances. Settings currently show the account email and fixed locale defaults; editable budgets/settings are later work.
+- The configured owner can record expenses and refunds from chat. The server appends to `Transactions` in Google Sheets. History and monthly totals read from the same sheet; no financial rows are written to PostgreSQL.
+- Editable budgets, transaction editing, export, and PWA installation are outside this change.
 
 ## Architecture and standards
 
@@ -52,6 +53,7 @@ src/app/auth/                Email confirmation and PKCE callbacks
 src/app/api/account/         Authenticated, owner-scoped profile API
 src/components/              Shared shell and small client form boundaries
 src/lib/auth/                Server-only session validation
+src/lib/expenses/            Expense parser, totals, and server-only Sheets adapter
 src/lib/supabase/            Typed browser/server clients and cookie refresh
 src/lib/validation/          Zod input schemas
 src/types/                   Database and action-state contracts
@@ -60,9 +62,9 @@ supabase/migrations/         Versioned SQL only
 tests/                      Components, auth, API, PostgreSQL/RLS tests
 ```
 
-Use Server Components by default, strict types, `@/*` imports, Zod at write boundaries, accessible forms, semantic HTML, and visible focus states. Do not trust caller-supplied identities or `getSession()` for authorization. Never put a service-role/secret key in the app. All application DB access uses the public key with the logged-in user's JWT and RLS.
+Use Server Components by default, strict types, `@/*` imports, Zod at write boundaries, accessible forms, semantic HTML, and visible focus states. Do not trust caller-supplied identities or `getSession()` for authorization. Keep Google credentials server-only. The existing profile API uses the Supabase publishable key with the logged-in user's JWT and RLS.
 
-The intended defaults are Thai, THB, and Asia/Bangkok. Financial commands must later use atomic transactions/RPCs and per-user UUID idempotency keys. Do not introduce AI, paid infrastructure, or offline financial writes. All SQL changes belong in a new migration; regenerate the typed database contract after future schema changes.
+The ledger uses Thai, THB, and Asia/Bangkok. It stores numeric amounts in baht and calculates totals in integer satang. Sheets writes are not automatically retried; see the setup guide for how to reconcile uncertain writes. No offline financial writes are supported.
 
 ## Verification and remaining scope
 
@@ -72,4 +74,4 @@ See [Phase 1 checklist](docs/phase-1-checklist.md) and [Phase 2 checklist](docs/
 
 These tests **do not replace hosted Supabase integration testing**: real GoTrue JWT/cookie handling, PostgREST, email delivery, and browser confirmation/recovery must be checked against a configured development Supabase project. See the manual checklist in the setup guide. No hosted database migration or Vercel deployment is performed by this change.
 
-Next: Phase 3 implements the Thai command parser and amount validation. Atomic command execution, persistence, balances, Bangkok reporting boundaries, budget copying, history/export, and PWA installation remain in their planned phases.
+The Sheets tests cover Thai command parsing, Bangkok month boundaries, owner checks, RAW append payloads, and error handling with mocked Google requests. A live write requires your private Sheet and Service Account; use the manual check in the setup guide after configuring them.

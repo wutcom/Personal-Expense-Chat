@@ -1,5 +1,7 @@
 # Personal Expense Chat — Implementation Plan for Codex
 
+> Storage update: the app now writes expenses and refunds to Google Sheets. See [Google Sheets setup](docs/google-sheets-setup.md) for the current implementation. The PostgreSQL ledger below is the original proposal.
+
 ## Goal
 Build a Thai-first, mobile-first private expense tracking PWA replacing LINE OA chat commands. Stack: Next.js App Router + TypeScript, Tailwind CSS, Supabase Auth/PostgreSQL/RLS, Vercel Hobby. No paid APIs or LLM in MVP.
 
