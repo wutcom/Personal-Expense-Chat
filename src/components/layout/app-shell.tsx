@@ -33,7 +33,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             Expense Chat
           </Link>
           <span className="topbar-label">จัดการเงินในแบบของคุณ</span>
-          <span className="phase-badge">ระยะที่ 2 · บัญชีส่วนตัว</span>
+          <span className="phase-badge">บัญชีส่วนตัว · Google Sheets</span>
         </header>
         <main id="main-content" tabIndex={-1}>
           {children}

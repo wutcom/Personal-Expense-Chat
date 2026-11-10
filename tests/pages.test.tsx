@@ -36,10 +36,14 @@ describe("workspace routes", () => {
       expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     },
   );
-  it("keeps financial writes disabled until execution is implemented", async () => {
+  it("does not show the composer without a configured ledger", async () => {
     render(await ChatPage());
-    expect(screen.getByRole("textbox", { name: "ข้อความ" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "ส่งข้อความ" })).toBeDisabled();
+    expect(
+      screen.queryByRole("textbox", { name: "ข้อความ" }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "ยังไม่ได้ตั้งค่า Google Sheets",
+    );
   });
   it("shows unknown balances", async () => {
     render(await DashboardPage());
